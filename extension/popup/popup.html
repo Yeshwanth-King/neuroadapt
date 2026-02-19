@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdaptLearn</title>
+  <style>
+    html, body { margin: 0; padding: 0; min-width: 320px; min-height: 380px; background: #fff; color: #1a1a1a; }
+    .popup { width: 300px; min-width: 300px; padding: 12px; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; box-sizing: border-box; }
+    .title { margin: 0 0 10px 0; font-size: 16px; font-weight: 600; }
+    .controls { display: flex; flex-direction: column; gap: 8px; }
+    .toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .toggle input { width: 18px; height: 18px; accent-color: #0d9488; }
+    .row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .row label { flex: 0 0 70px; }
+    .row input[type="range"] { flex: 1; min-width: 0; accent-color: #0d9488; }
+    #fontScaleValue { flex: 0 0 40px; text-align: right; font-variant-numeric: tabular-nums; }
+    .actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .actions button { padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid #ccc; border-radius: 8px; background: #f0fdfa; color: #0f766e; }
+    .actions button:hover { background: #ccfbf1; }
+    .actions button#reset { background: #f5f5f5; color: #374151; }
+    .actions button#reset:hover { background: #eee; }
+    .adhd-paste { margin: 8px 0; padding: 8px 0; border-top: 1px solid #eee; }
+    #openAdhdReader:hover { background: #ccfbf1; }
+  </style>
+</head>
+<body>
+  <div class="popup">
+    <h1 class="title">AdaptLearn</h1>
+    <div class="controls">
+      <label class="toggle">
+        <input type="checkbox" id="enabled">
+        <span>Enable extension</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="modeDyslexia">
+        <span>Dyslexia mode</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="modeAdhdFocus">
+        <span>ADHD focus mode (page)</span>
+      </label>
+      <div class="adhd-paste">
+        <label for="adhdPaste" style="font-weight:600; display:block; margin-bottom:4px;">Paste text to read (no distraction)</label>
+        <textarea id="adhdPaste" rows="4" placeholder="Paste any text here, then click Open reader…" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:8px; font-size:12px; resize:vertical; box-sizing:border-box;"></textarea>
+        <button type="button" id="openAdhdReader" style="margin-top:8px; width:100%; padding:10px; font-weight:600; border-radius:8px; border:1px solid #0d9488; background:#f0fdfa; color:#0f766e; cursor:pointer;">Open ADHD reader</button>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="modeLowVision">
+        <span>Low vision mode</span>
+      </label>
+      <div class="row">
+        <label for="fontScale">Font size</label>
+        <input type="range" id="fontScale" min="1" max="1.6" step="0.05" value="1">
+        <span id="fontScaleValue">100%</span>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="button" id="clearFocus">Clear focus</button>
+      <button type="button" id="reset">Reset</button>
+    </div>
+  </div>
+  <script src="./popup.js"></script>
+</body>
+</html>

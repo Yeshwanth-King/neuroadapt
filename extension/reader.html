@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ADHD reader – AdaptLearn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    /* Match NeuroAdapt ADHD calm theme + Atkinson Hyperlegible */
+    * { box-sizing: border-box; }
+    html { font-size: 100%; }
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: #F7F3E9;
+      color: #1E1E1E;
+      font-family: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif;
+      font-size: 1.125rem;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+    .reader {
+      max-width: 40em;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .reader-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #9AA0A6;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+    /* Focus block: soft blue highlight like main app .text-highlight */
+    .reader-content-wrap {
+      background: #CFE8FF;
+      color: #1E1E1E;
+      border-radius: 1rem;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 2rem;
+      flex: 1;
+      border: 1px solid #b8d9f5;
+    }
+    .reader-content {
+      font-size: 1.25rem;
+      line-height: 1.9;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin: 0;
+      font-weight: 400;
+    }
+    .reader-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e0d9c7;
+    }
+    .reader-nav-hint {
+      font-size: 0.8125rem;
+      color: #9AA0A6;
+      margin: 0;
+    }
+    .reader-nav button {
+      min-height: 48px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .reader-nav button:active { transform: scale(0.98); }
+    .reader-nav button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #btnPrev {
+      background: #F7F3E9;
+      color: #1E1E1E;
+      border: 1px solid #e0d9c7;
+    }
+    #btnPrev:hover:not(:disabled) { background: #eee9df; }
+    #btnNext {
+      background: #4F8EF7;
+      color: #fff;
+      border: none;
+    }
+    #btnNext:hover:not(:disabled) { background: #3b7de6; }
+    .reader-close {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      padding: 0;
+      border: none;
+      border-radius: 0.75rem;
+      background: rgba(0,0,0,0.06);
+      font-size: 1.35rem;
+      line-height: 1;
+      cursor: pointer;
+      color: #1E1E1E;
+      font-family: inherit;
+    }
+    .reader-close:hover { background: rgba(0,0,0,0.1); }
+    .reader-empty {
+      color: #9AA0A6;
+      font-size: 1rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="reader">
+    <p class="reader-label" id="readerTitle">Paragraph 1 of 1</p>
+    <div class="reader-content-wrap">
+      <div class="reader-content" id="readerContent"></div>
+    </div>
+    <div class="reader-nav">
+      <button type="button" id="btnPrev">← Previous</button>
+      <p class="reader-nav-hint">Use ← → arrow keys</p>
+      <button type="button" id="btnNext">Next →</button>
+    </div>
+  </div>
+  <button type="button" class="reader-close" id="btnClose" aria-label="Close">×</button>
+  <script src="reader.js"></script>
+</body>
+</html>

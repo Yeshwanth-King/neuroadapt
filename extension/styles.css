@@ -1,0 +1,167 @@
+/* AdaptLearn – scoped overrides via :root classes and CSS variables */
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('assets/fonts/opendyslexic-latin-400-normal.woff2') format('woff2');
+}
+
+:root {
+  --adaptn-font-scale: 1;
+  --adaptn-letter-spacing-em: 0;
+  --adaptn-line-height: inherit;
+}
+
+/* Only apply when extension is enabled */
+html.adaptn-enabled {
+  font-size: calc(var(--adaptn-font-scale) * 100%) !important;
+}
+
+/* Dyslexia: font + spacing (font-face added in bundle step) */
+html.adaptn-enabled.adaptn-dyslexia body,
+html.adaptn-enabled.adaptn-dyslexia p,
+html.adaptn-enabled.adaptn-dyslexia li,
+html.adaptn-enabled.adaptn-dyslexia blockquote,
+html.adaptn-enabled.adaptn-dyslexia h1,
+html.adaptn-enabled.adaptn-dyslexia h2,
+html.adaptn-enabled.adaptn-dyslexia h3,
+html.adaptn-enabled.adaptn-dyslexia h4,
+html.adaptn-enabled.adaptn-dyslexia h5,
+html.adaptn-enabled.adaptn-dyslexia h6,
+html.adaptn-enabled.adaptn-dyslexia span:not(code):not(.adaptn-exclude),
+html.adaptn-enabled.adaptn-dyslexia div:not([contenteditable="true"]) {
+  font-family: 'OpenDyslexic', sans-serif !important;
+  letter-spacing: var(--adaptn-letter-spacing-em) !important;
+  line-height: var(--adaptn-line-height) !important;
+}
+
+html.adaptn-enabled.adaptn-dyslexia p,
+html.adaptn-enabled.adaptn-dyslexia li {
+  margin-bottom: 1em !important;
+}
+
+/* Exclude code and form controls */
+html.adaptn-enabled.adaptn-dyslexia code,
+html.adaptn-enabled.adaptn-dyslexia pre,
+html.adaptn-enabled.adaptn-dyslexia kbd,
+html.adaptn-enabled.adaptn-dyslexia samp,
+html.adaptn-enabled.adaptn-dyslexia input,
+html.adaptn-enabled.adaptn-dyslexia textarea,
+html.adaptn-enabled.adaptn-dyslexia select,
+html.adaptn-enabled.adaptn-dyslexia button {
+  font-family: inherit !important;
+}
+
+/* Low vision: enhance contrast without inverting or overriding full page.
+   Only bump text legibility and link visibility; avoid forcing body background. */
+html.adaptn-enabled.adaptn-lowvision p,
+html.adaptn-enabled.adaptn-lowvision li,
+html.adaptn-enabled.adaptn-lowvision span,
+html.adaptn-enabled.adaptn-lowvision div:not([contenteditable="true"]) {
+  text-shadow: 0 0 0 transparent, 0 1px 1px rgba(0,0,0,0.08) !important;
+  font-weight: 500 !important;
+}
+
+html.adaptn-enabled.adaptn-lowvision a {
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+}
+
+html.adaptn-enabled.adaptn-lowvision h1,
+html.adaptn-enabled.adaptn-lowvision h2,
+html.adaptn-enabled.adaptn-lowvision h3,
+html.adaptn-enabled.adaptn-lowvision h4,
+html.adaptn-enabled.adaptn-lowvision h5,
+html.adaptn-enabled.adaptn-lowvision h6 {
+  font-weight: 700 !important;
+}
+
+/* ADHD focus: reader panel – one paragraph at a time, minimal distraction */
+.adaptn-adhd-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483645 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  cursor: pointer !important;
+}
+
+.adaptn-adhd-panel {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 2147483647 !important;
+  width: 92% !important;
+  max-width: 42em !important;
+  max-height: 85vh !important;
+  overflow: auto !important;
+  background: #f7f3e9 !important;
+  color: #1e1e1e !important;
+  padding: 1.5rem 2rem !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  font-size: 1.15rem !important;
+  line-height: 1.8 !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  cursor: default !important;
+}
+
+.adaptn-adhd-panel-content {
+  margin-bottom: 1.5rem !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+}
+
+.adaptn-adhd-panel-nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+  flex-wrap: wrap !important;
+  padding-top: 1rem !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.adaptn-adhd-panel-nav button {
+  padding: 0.5rem 1rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  color: #1e1e1e !important;
+  cursor: pointer !important;
+}
+
+.adaptn-adhd-panel-nav button:hover {
+  background: #eee !important;
+}
+
+.adaptn-adhd-panel-close {
+  position: absolute !important;
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  font-size: 1.25rem !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  color: #444 !important;
+}
+
+.adaptn-adhd-panel-close:hover {
+  background: rgba(0, 0, 0, 0.12) !important;
+}
+
+.adaptn-adhd-panel-title {
+  font-size: 0.85rem !important;
+  color: #555 !important;
+  margin-bottom: 0.5rem !important;
+}
