@@ -314,6 +314,64 @@ body {
 .adhd-theme-dark .bg-secondary { background-color: #21262d !important; }
 .adhd-theme-dark .text-secondary-foreground { color: #F4F4F4; }
 
+/* Custom keyword tooltip - adapts to accessibility mode */
+.keyword-tooltip {
+  max-width: 280px;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  animation: tooltip-fade 0.15s ease-out;
+}
+.keyword-tooltip-content {
+  display: block;
+}
+@keyframes tooltip-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Normal: clean, readable */
+.keyword-tooltip-normal {
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  border: 1px solid hsl(var(--border));
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Dyslexia: OpenDyslexic, more spacing, high contrast */
+.keyword-tooltip-dyslexia {
+  font-family: var(--font-dyslexic);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 2px solid hsl(var(--primary));
+  font-size: 1rem;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+}
+
+/* ADHD: calm, one clear line when possible */
+.keyword-tooltip-adhd {
+  background: #F7F3E9;
+  color: #1E1E1E;
+  border: 1px solid #e0d9c7;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 260px;
+}
+
+/* Low vision: larger text, strong contrast */
+.keyword-tooltip-lowvision {
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+  border: 2px solid hsl(var(--primary));
+  font-size: 1.15rem;
+  line-height: 1.6;
+  padding: 0.6rem 0.9rem;
+  max-width: 320px;
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;

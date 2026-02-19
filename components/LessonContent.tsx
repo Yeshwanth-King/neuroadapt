@@ -5,6 +5,7 @@ import { useAccessibility } from "@/contexts/AccessibilityContext";
 import type { LessonSection } from "@/data/demoLesson";
 import { GLOSSARY } from "@/data/glossary";
 import type { TransformedContent } from "@/types/ai";
+import { KeywordTooltip } from "@/components/KeywordTooltip";
 
 interface LessonContentProps {
   sections: LessonSection[];
@@ -67,6 +68,7 @@ export function LessonContent({
 }: LessonContentProps) {
   // All hooks must be called before any early returns
   const { mode, fontSize, currentReadAloudWordIndex } = useAccessibility();
+  const accessibilityMode = mode;
   const [activeSentence, setActiveSentence] = useState(0);
   const activeSentenceRef = useRef<HTMLSpanElement>(null);
   
@@ -261,14 +263,22 @@ export function LessonContent({
                         ([k]) => k.toLowerCase() === seg.value.toLowerCase()
                       )?.[1];
                     const isHighlight = seg.wordIndex === currentReadAloudWordIndex;
-                    return (
-                      <span
+                    return meaning ? (
+                      <KeywordTooltip
                         key={j}
+                        meaning={meaning}
+                        mode={accessibilityMode}
                         className={
                           (isHighlight ? "read-aloud-highlight " : "") +
-                          (meaning ? "cursor-help border-b-2 border-dashed border-primary/50 " : "")
+                          "cursor-help border-b-2 border-dashed border-primary/50 "
                         }
-                        title={meaning}
+                      >
+                        {seg.value}
+                      </KeywordTooltip>
+                    ) : (
+                      <span
+                        key={j}
+                        className={isHighlight ? "read-aloud-highlight" : ""}
                       >
                         {seg.value}
                       </span>
@@ -309,13 +319,14 @@ export function LessonContent({
 
                     return parts.map((part) =>
                       part.meaning ? (
-                        <span
+                        <KeywordTooltip
                           key={part.key}
+                          meaning={part.meaning}
+                          mode={accessibilityMode}
                           className="cursor-help border-b-2 border-dashed border-primary/50 text-foreground"
-                          title={part.meaning}
                         >
                           {part.text}
-                        </span>
+                        </KeywordTooltip>
                       ) : (
                         <span key={part.key}>{part.text}</span>
                       )
@@ -345,7 +356,52 @@ export function LessonContent({
                       seg.value
                     )
                   ) ?? p
-                : p}
+                : (() => {
+                    // When we have transformed content, wrap key terms with tooltips
+                    if (useTransformed && transformedContent?.key_terms?.length) {
+                      const entries = transformedContent.key_terms.map((t) => [t.word, t.simple_meaning] as [string, string]).sort((a, b) => b[0].length - a[0].length);
+                      const parts: { key: string; text: string; meaning?: string }[] = [];
+                      let remaining = p;
+                      let keyIndex = 0;
+                      while (remaining.length > 0) {
+                        let found = false;
+                        for (const [word, meaning] of entries) {
+                          const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                          const re = new RegExp(`\\b(${escaped})\\b`, "i");
+                          const match = remaining.match(re);
+                          if (!match || match.index === undefined) continue;
+                          const idx = match.index;
+                          const matchedText = match[1];
+                          if (idx > 0) {
+                            parts.push({ key: `t-${keyIndex++}`, text: remaining.slice(0, idx) });
+                          }
+                          parts.push({ key: `g-${keyIndex++}`, text: matchedText, meaning });
+                          remaining = remaining.slice(idx + matchedText.length);
+                          found = true;
+                          break;
+                        }
+                        if (!found) {
+                          parts.push({ key: `t-${keyIndex++}`, text: remaining });
+                          break;
+                        }
+                      }
+                      return parts.map((part) =>
+                        part.meaning ? (
+                          <KeywordTooltip
+                            key={part.key}
+                            meaning={part.meaning}
+                            mode={accessibilityMode}
+                            className="cursor-help border-b-2 border-dashed border-primary/50 text-foreground"
+                          >
+                            {part.text}
+                          </KeywordTooltip>
+                        ) : (
+                          <span key={part.key}>{part.text}</span>
+                        )
+                      );
+                    }
+                    return p;
+                  })()}
             </p>
           ))}
         </div>

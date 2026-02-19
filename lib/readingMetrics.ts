@@ -40,16 +40,20 @@ export function fleschReadingEase(text: string): number {
 }
 
 /**
- * Compute percentage reduction in complexity (higher Flesch = easier).
- * So "reduction" here means: (newScore - oldScore) / oldScore * 100 when we want "easier".
- * We report "complexity reduced by X%" when simplified version has higher Flesch score.
- * reduction = ((transformed - original) / |original|) * 100, capped for display.
+ * Compute percentage reduction in complexity for display.
+ * Flesch Reading Ease: higher = easier to read. So we convert to a "complexity" scale
+ * where complexity = 100 - Flesch (capped), so higher Flesch = lower complexity.
+ * Reduction = (originalComplexity - transformedComplexity) / originalComplexity * 100.
+ * This never exceeds 100% and is mathematically correct.
  */
 export function complexityReductionPercent(originalScore: number, transformedScore: number): number {
-  if (originalScore === 0) return 0;
-  const diff = transformedScore - originalScore;
-  const pct = (diff / Math.abs(originalScore)) * 100;
-  return Math.round(pct * 10) / 10;
+  // Map Flesch (ease) to a 0–100 complexity scale: higher Flesch = lower complexity
+  const originalComplexity = Math.max(0, 100 - originalScore);
+  const transformedComplexity = Math.max(0, 100 - transformedScore);
+  if (originalComplexity === 0) return 0;
+  const reduction = ((originalComplexity - transformedComplexity) / originalComplexity) * 100;
+  const clamped = Math.max(0, Math.min(100, reduction));
+  return Math.round(clamped * 10) / 10;
 }
 
 export interface ReadingMetrics {
