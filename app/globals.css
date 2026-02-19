@@ -1,9 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import "tailwindcss";
 
 /* OpenDyslexic - CDN */
 @font-face {
   font-family: "OpenDyslexic";
-  src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.2/compiled/OpenDyslexic-Regular.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -11,38 +12,175 @@
 
 @font-face {
   font-family: "OpenDyslexic";
-  src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.2/compiled/OpenDyslexic-Bold.woff2") format("woff2");
+  src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Bold.woff") format("woff");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
+/* Lovable palette: green (teal) primary + cream background + amber accent */
 :root {
-  --background: #faf8f5;
-  --foreground: #1a1a1a;
-  --accent: #2563eb;
-  --focus-ring: 2px solid #2563eb;
+  --font-body: "Atkinson Hyperlegible", sans-serif;
+  --font-dyslexic: "OpenDyslexic", sans-serif;
+
+  /* Cream / warm off-white */
+  --background: 30 60% 97%;
+  --foreground: 240 20% 12%;
+
+  --card: 30 40% 95%;
+  --card-foreground: 240 20% 12%;
+
+  --popover: 30 60% 97%;
+  --popover-foreground: 240 20% 12%;
+
+  /* Teal-green primary */
+  --primary: 174 56% 45%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Cream / beige secondary */
+  --secondary: 30 30% 90%;
+  --secondary-foreground: 240 20% 12%;
+
+  --muted: 30 20% 92%;
+  --muted-foreground: 240 10% 40%;
+
+  /* Amber accent (e.g. Read Aloud) */
+  --accent: 35 90% 55%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 30 20% 85%;
+  --input: 30 20% 85%;
+  --ring: 174 56% 45%;
+
+  --radius: 1rem;
+
+  --sidebar-background: 30 40% 95%;
+  --sidebar-foreground: 240 20% 12%;
+  --sidebar-primary: 174 56% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 35 90% 55%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 30 20% 85%;
+  --sidebar-ring: 174 56% 45%;
+
+  --highlight: 50 100% 80%;
+  --focus-bg: 240 15% 8%;
+  --focus-fg: 50 100% 90%;
+  --success: 160 60% 40%;
+  --success-foreground: 0 0% 100%;
 }
 
+.dark,
 [data-theme="dark"] {
-  --background: #0d0d0d;
-  --foreground: #f0f0f0;
-  --accent: #60a5fa;
-  --focus-ring: 2px solid #60a5fa;
+  --background: 240 15% 8%;
+  --foreground: 50 100% 95%;
+
+  --card: 240 15% 12%;
+  --card-foreground: 50 100% 95%;
+
+  --popover: 240 15% 12%;
+  --popover-foreground: 50 100% 95%;
+
+  --primary: 50 100% 60%;
+  --primary-foreground: 240 15% 8%;
+
+  --secondary: 240 10% 18%;
+  --secondary-foreground: 50 100% 95%;
+
+  --muted: 240 10% 18%;
+  --muted-foreground: 50 30% 70%;
+
+  --accent: 50 100% 60%;
+  --accent-foreground: 240 15% 8%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 240 10% 22%;
+  --input: 240 10% 22%;
+  --ring: 50 100% 60%;
+
+  --highlight: 50 100% 50%;
+  --focus-bg: 240 15% 4%;
+  --focus-fg: 50 100% 95%;
+  --success: 160 60% 50%;
+  --success-foreground: 240 15% 8%;
+}
+
+.high-contrast {
+  --background: 240 15% 8%;
+  --foreground: 50 100% 95%;
+
+  --card: 240 15% 12%;
+  --card-foreground: 50 100% 95%;
+
+  --popover: 240 15% 12%;
+  --popover-foreground: 50 100% 95%;
+
+  --primary: 50 100% 60%;
+  --primary-foreground: 240 15% 8%;
+
+  --secondary: 240 10% 18%;
+  --secondary-foreground: 50 100% 95%;
+
+  --muted: 240 10% 18%;
+  --muted-foreground: 50 30% 70%;
+
+  --accent: 50 100% 60%;
+  --accent-foreground: 240 15% 8%;
+
+  --border: 240 10% 22%;
+  --input: 240 10% 22%;
+  --ring: 50 100% 60%;
+
+  --highlight: 50 100% 50%;
+  --focus-bg: 240 15% 4%;
+  --focus-fg: 50 100% 95%;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-dyslexia: "OpenDyslexic", var(--font-geist-sans), system-ui, sans-serif;
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-highlight: hsl(var(--highlight));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --font-sans: var(--font-body);
+  --font-mono: ui-monospace, monospace;
+  --font-dyslexia: var(--font-dyslexic);
+  --radius-sm: calc(var(--radius) - 0.25rem);
+  --radius-md: calc(var(--radius) - 0.125rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+}
+
+* {
+  border-color: hsl(var(--border));
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -50,9 +188,17 @@ body {
   outline: none;
 }
 
-:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: 2px;
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px hsl(var(--ring)), 0 0 0 2px hsl(var(--background));
+}
+
+.font-dyslexic {
+  font-family: var(--font-dyslexic) !important;
+}
+
+.font-dyslexia {
+  font-family: var(--font-dyslexic) !important;
 }
 
 /* Font scale for slider */
@@ -60,3 +206,125 @@ body {
 .text-scale-110 { font-size: 1.1rem; }
 .text-scale-125 { font-size: 1.25rem; }
 .text-scale-150 { font-size: 1.5rem; }
+
+.text-highlight {
+  background-color: hsl(var(--highlight));
+  color: hsl(45 30% 18%);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.btn-accessible {
+  min-height: 48px;
+  padding: 0.75rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+}
+.btn-accessible:active {
+  transform: scale(0.98);
+}
+
+.focus-sentence {
+  background-color: hsl(var(--highlight));
+  color: hsl(45 30% 18%);
+  border-radius: 4px;
+  padding: 0 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dimmed-text {
+  opacity: 0.25;
+  transition: opacity 0.3s ease;
+}
+
+.read-aloud-highlight {
+  background-color: hsl(var(--highlight));
+  color: hsl(45 30% 18%);
+  border-radius: 2px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* ADHD theme: Option 1 – Soft cream + gentle blue (calm, default) */
+.adhd-theme-calm {
+  background-color: #F7F3E9 !important;
+  color: #1E1E1E;
+}
+.adhd-theme-calm .bg-background,
+.adhd-theme-calm header[class*="bg-"],
+.adhd-theme-calm footer[class*="bg-"] {
+  background-color: #F7F3E9 !important;
+}
+.adhd-theme-calm .text-foreground,
+.adhd-theme-calm h1, .adhd-theme-calm h2 { color: #1E1E1E; }
+.adhd-theme-calm .text-muted-foreground { color: #9AA0A6; }
+.adhd-theme-calm .dimmed-text { color: #9AA0A6 !important; opacity: 1; }
+.adhd-theme-calm .text-highlight {
+  background-color: #CFE8FF !important;
+  color: #1E1E1E !important;
+}
+.adhd-theme-calm .btn-accessible.bg-primary,
+.adhd-theme-calm button.bg-primary { background-color: #4F8EF7 !important; color: #fff !important; }
+.adhd-theme-calm .border-border { border-color: #e0d9c7; }
+
+/* ADHD theme: Option 2 – Sage green (cognitive calm) */
+.adhd-theme-sage {
+  background-color: #EEF3EF !important;
+  color: #1F2A24;
+}
+.adhd-theme-sage .bg-background,
+.adhd-theme-sage header[class*="bg-"],
+.adhd-theme-sage footer[class*="bg-"] {
+  background-color: #EEF3EF !important;
+}
+.adhd-theme-sage .text-foreground,
+.adhd-theme-sage h1, .adhd-theme-sage h2 { color: #1F2A24; }
+.adhd-theme-sage .text-muted-foreground { color: #A3B2A8; }
+.adhd-theme-sage .dimmed-text { color: #A3B2A8 !important; opacity: 1; }
+.adhd-theme-sage .text-highlight {
+  background-color: #B8E3C6 !important;
+  color: #1F2A24 !important;
+}
+.adhd-theme-sage .btn-accessible.bg-primary,
+.adhd-theme-sage button.bg-primary { background-color: #2E8B57 !important; color: #fff !important; }
+.adhd-theme-sage .border-border { border-color: #d4e0d8; }
+
+/* ADHD theme: Option 3 – Dark focus (low distraction) */
+.adhd-theme-dark {
+  background-color: #111418 !important;
+  color: #F4F4F4;
+}
+.adhd-theme-dark .bg-background,
+.adhd-theme-dark header[class*="bg-"],
+.adhd-theme-dark footer[class*="bg-"] {
+  background-color: #111418 !important;
+}
+.adhd-theme-dark .text-foreground,
+.adhd-theme-dark h1, .adhd-theme-dark h2 { color: #F4F4F4; }
+.adhd-theme-dark .text-muted-foreground { color: #6E7681; }
+.adhd-theme-dark .dimmed-text { color: #6E7681 !important; opacity: 1; }
+.adhd-theme-dark .text-highlight {
+  background-color: #2A4365 !important;
+  color: #F4F4F4 !important;
+}
+.adhd-theme-dark .btn-accessible.bg-primary,
+.adhd-theme-dark button.bg-primary { background-color: #38BDF8 !important; color: #111418 !important; }
+.adhd-theme-dark .border-border { border-color: #21262d; }
+.adhd-theme-dark .bg-secondary { background-color: #21262d !important; }
+.adhd-theme-dark .text-secondary-foreground { color: #F4F4F4; }
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
