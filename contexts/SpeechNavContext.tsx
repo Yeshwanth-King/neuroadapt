@@ -193,15 +193,37 @@ export function SpeechNavProvider({ children }: { children: ReactNode }) {
       const resultsLength = e.results.length;
       const last = resultsLength - 1;
       const lastResult = e.results[last];
+      const isFinal = lastResult?.isFinal ?? false;
+      
+      // Only process final results to avoid duplicate execution
+      // Interim results are just for showing what's being recognized
+      if (!isFinal) return;
+      
       const firstItem = lastResult?.[0] as { transcript: string; confidence?: number } | undefined;
       const transcript = firstItem?.transcript?.trim() ?? "";
       const result = getCommandKey(transcript);
       if (!result) return;
+      
       const now = Date.now();
       const lastCmd = lastCommandRef.current;
       const debounceMs = FONT_KEYS.has(result.key) ? FONT_DEBOUNCE_MS : DEBOUNCE_MS;
-      if (lastCmd?.key === result.key && now - lastCmd.at < debounceMs) return;
+      
+      // Enhanced debouncing: check if same command was executed recently
+      if (lastCmd?.key === result.key && now - lastCmd.at < debounceMs) {
+        console.log("[SpeechNav] Command debounced:", result.key, "last executed", now - lastCmd.at, "ms ago");
+        return;
+      }
+      
+      // Special handling for pause commands (includes "stop" which maps to "pause")
+      // Cancel any ongoing speech immediately before executing handler
+      if (result.key === "pause") {
+        if (typeof window !== "undefined" && "speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+
       lastCommandRef.current = { key: result.key, at: now };
+      console.log("[SpeechNav] Executing command:", result.key, result.payload);
 
       const pageHandler = pageCommandsRef.current[result.key];
       const globalHandler = globalCommandsRef.current[result.key];

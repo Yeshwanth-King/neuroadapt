@@ -1,12 +1,13 @@
 "use client";
 
-import { Suspense, useState, useEffect, useMemo } from "react";
+import { Suspense, useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAccessibility, type AdhdThemeId } from "@/contexts/AccessibilityContext";
 import { useSpeechNav } from "@/contexts/SpeechNavContext";
 import { DEMO_LESSON } from "@/data/demoLesson";
 import type { DemoLesson } from "@/data/demoLesson";
+import { useTransform } from "@/lib/hooks/useTransform";
 import { ModeSelector } from "@/components/ModeSelector";
 import { AccessibilityToolbar } from "@/components/AccessibilityToolbar";
 import { LessonContent } from "@/components/LessonContent";
@@ -73,13 +74,33 @@ function useLesson(): DemoLesson {
 }
 
 function LearnContent() {
+  const searchParams = useSearchParams();
+  const isCustom = searchParams.get("custom") === "1";
   const lesson = useLesson();
   const optimizedBadge = useOptimizedBadge();
-  const { mode, highContrast, setMode, setFontSize, setHighContrast, setCurrentReadAloudWordIndex, adhdTheme, setAdhdTheme, fontSize } =
+  const { mode, highContrast, setMode, setFontSize, setHighContrast, setCurrentReadAloudWordIndex, adhdTheme, setAdhdTheme, fontSize, transformedContent, setTransformedContent, setIsTransforming } =
     useAccessibility();
   const { registerPageCommands, clearPageCommands, speak } = useSpeechNav();
+  const { transform, isTransforming: isTransformingHook } = useTransform();
   const [currentSection, setCurrentSection] = useState(0);
-  const total = lesson.sections.length;
+  // Calculate total sections based on mode and transformed content
+  const total = useMemo(() => {
+    if (mode === "adhd" && transformedContent?.adhd_chunked_version?.length) {
+      return transformedContent.adhd_chunked_version.length;
+    }
+    if (transformedContent && (mode === "dyslexia" || mode === "normal" || mode === "low-vision")) {
+      // For transformed content, count paragraphs from the transformed version
+      if (mode === "dyslexia" && transformedContent.dyslexia_version) {
+        const paragraphs = transformedContent.dyslexia_version.split(/\n\n+/).filter(Boolean);
+        return Math.max(1, paragraphs.length);
+      }
+      if ((mode === "normal" || mode === "low-vision") && transformedContent.simplified_version) {
+        const paragraphs = transformedContent.simplified_version.split(/\n\n+/).filter(Boolean);
+        return Math.max(1, paragraphs.length);
+      }
+    }
+    return lesson.sections.length;
+  }, [mode, transformedContent, lesson.sections.length]);
 
   useEffect(() => {
     registerPageCommands({
@@ -157,6 +178,52 @@ function LearnContent() {
   ]);
 
   useEffect(() => {
+    setIsTransforming(isTransformingHook);
+  }, [isTransformingHook, setIsTransforming]);
+
+  // Transform custom content on load
+  useEffect(() => {
+    if (!isCustom || typeof window === "undefined" || transformedContent) return;
+    const raw = sessionStorage.getItem("neuroadapt-content");
+    if (!raw?.trim()) return;
+
+    // Check if we should use transformed content
+    const hash = raw.trim().split("").reduce((a, b) => {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    const useTransformed = sessionStorage.getItem("neuroadapt-use-transformed") === Math.abs(hash).toString(36);
+
+    if (useTransformed) {
+      // Get profile
+      let profile: { focusDuration?: "short" | "medium" | "long"; difficulty?: "simpler" | "standard" | "as-is" } | undefined;
+      try {
+        const profileRaw = sessionStorage.getItem(PROFILE_KEY);
+        if (profileRaw) {
+          const p = JSON.parse(profileRaw) as { focusDuration?: string; difficulty?: string };
+          if (p.focusDuration === "short" || p.focusDuration === "medium" || p.focusDuration === "long") {
+            profile = {
+              focusDuration: p.focusDuration,
+              difficulty: p.difficulty === "simpler" || p.difficulty === "standard" || p.difficulty === "as-is"
+                ? p.difficulty
+                : undefined,
+            };
+          } else if (p.difficulty === "simpler" || p.difficulty === "standard" || p.difficulty === "as-is") {
+            profile = { difficulty: p.difficulty };
+          }
+        }
+      } catch {}
+
+      // Transform
+      transform(raw.trim(), profile).then((result) => {
+        if (result) {
+          setTransformedContent(result);
+        }
+      });
+    }
+  }, [isCustom, transform, setTransformedContent]);
+
+  useEffect(() => {
     if (highContrast || mode === "low-vision") {
       document.documentElement.classList.add("high-contrast");
     } else {
@@ -165,12 +232,19 @@ function LearnContent() {
     return () => document.documentElement.classList.remove("high-contrast");
   }, [highContrast, mode]);
 
+  // Ensure currentSection is always within bounds when total changes
+  useEffect(() => {
+    if (currentSection >= total) {
+      setCurrentSection(Math.max(0, total - 1));
+    }
+  }, [total, currentSection]);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight" && currentSection < total - 1)
-        setCurrentSection((s) => s + 1);
+        setCurrentSection((s) => Math.min(total - 1, s + 1));
       if (e.key === "ArrowLeft" && currentSection > 0)
-        setCurrentSection((s) => s - 1);
+        setCurrentSection((s) => Math.max(0, s - 1));
       if (e.key === " ") {
         e.preventDefault();
         if (typeof window !== "undefined" && "speechSynthesis" in window) {
@@ -214,6 +288,11 @@ function LearnContent() {
               {optimizedBadge && (
                 <p className="mt-1.5 inline-block rounded-lg bg-primary/15 px-2.5 py-1 text-xs font-bold text-primary">
                   {optimizedBadge}
+                </p>
+              )}
+              {transformedContent && transformedContent.complexity_reduction !== undefined && transformedContent.complexity_reduction !== 0 && (
+                <p className="mt-1.5 inline-block rounded-lg bg-accent/15 px-2.5 py-1 text-xs font-bold text-accent">
+                  Complexity reduced by {Math.abs(transformedContent.complexity_reduction).toFixed(1)}%
                 </p>
               )}
             </div>
@@ -265,6 +344,7 @@ function LearnContent() {
         <LessonContent
           sections={lesson.sections}
           currentSection={currentSection}
+          transformedContent={transformedContent}
         />
       </main>
 

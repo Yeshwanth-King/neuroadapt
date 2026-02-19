@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
 import type { AccessibilityMode } from "@/data/demoLesson";
+import type { TransformedContent } from "@/types/ai";
 
 export type AdhdThemeId = "calm" | "sage" | "dark";
 
@@ -18,6 +19,10 @@ interface AccessibilityState {
   setCurrentReadAloudWordIndex: (n: number | null) => void;
   adhdTheme: AdhdThemeId;
   setAdhdTheme: (t: AdhdThemeId) => void;
+  transformedContent: TransformedContent | null;
+  setTransformedContent: (content: TransformedContent | null) => void;
+  isTransforming: boolean;
+  setIsTransforming: (v: boolean) => void;
 }
 
 const AccessibilityContext = createContext<AccessibilityState | null>(null);
@@ -37,6 +42,8 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [highContrast, setHighContrast] = useState(false);
   const [currentReadAloudWordIndex, setCurrentReadAloudWordIndex] = useState<number | null>(null);
   const [adhdTheme, setAdhdThemeState] = useState<AdhdThemeId>(() => loadAdhdTheme());
+  const [transformedContent, setTransformedContent] = useState<TransformedContent | null>(null);
+  const [isTransforming, setIsTransforming] = useState(false);
 
   const setAdhdTheme = (t: AdhdThemeId) => {
     setAdhdThemeState(t);
@@ -58,6 +65,10 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
         setCurrentReadAloudWordIndex,
         adhdTheme,
         setAdhdTheme,
+        transformedContent,
+        setTransformedContent,
+        isTransforming,
+        setIsTransforming,
       }}
     >
       {children}
