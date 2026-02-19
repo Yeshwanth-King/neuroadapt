@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* OpenDyslexic - CDN */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.2/compiled/OpenDyslexic-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.2/compiled/OpenDyslexic-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --background: #faf8f5;
+  --foreground: #1a1a1a;
+  --accent: #2563eb;
+  --focus-ring: 2px solid #2563eb;
+}
+
+[data-theme="dark"] {
+  --background: #0d0d0d;
+  --foreground: #f0f0f0;
+  --accent: #60a5fa;
+  --focus-ring: 2px solid #60a5fa;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-dyslexia: "OpenDyslexic", var(--font-geist-sans), system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Font scale for slider */
+.text-scale-100 { font-size: 1rem; }
+.text-scale-110 { font-size: 1.1rem; }
+.text-scale-125 { font-size: 1.25rem; }
+.text-scale-150 { font-size: 1.5rem; }
