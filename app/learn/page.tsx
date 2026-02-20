@@ -300,20 +300,22 @@ function LearnContent() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-4">
               <ModeSelector />
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
               {mode === "adhd" && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
                       type="button"
-                      className="flex min-h-[48px] items-center gap-2 rounded-xl border-2 border-border bg-background px-4 py-2.5 text-left text-sm font-medium text-foreground transition-colors hover:bg-secondary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      className="flex min-h-[48px] items-center gap-2 rounded-xl bg-secondary px-4 py-2.5 text-left text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       aria-label="ADHD focus theme"
                     >
                       <span className="text-muted-foreground">ADHD theme</span>
-                      <span className="min-w-[8rem] font-semibold">{currentAdhdLabel}</span>
+                      <span className="min-w-28 font-semibold">{currentAdhdLabel}</span>
                       <ChevronDown className="h-4 w-4 shrink-0 opacity-70" aria-hidden />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="min-w-[12rem]">
+                  <DropdownMenuContent align="end" className="min-w-48">
                     {adhdThemeOptions.map((opt) => (
                       <DropdownMenuItem
                         key={opt.value}
@@ -326,16 +328,16 @@ function LearnContent() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
+              <AccessibilityToolbar
+                currentSectionText={
+                  lesson.sections[currentSection]
+                    ? lesson.sections[currentSection].heading +
+                      "\n\n" +
+                      lesson.sections[currentSection].paragraphs.join("\n\n")
+                    : ""
+                }
+              />
             </div>
-            <AccessibilityToolbar
-              currentSectionText={
-                lesson.sections[currentSection]
-                  ? lesson.sections[currentSection].heading +
-                    "\n\n" +
-                    lesson.sections[currentSection].paragraphs.join("\n\n")
-                  : ""
-              }
-            />
           </div>
         </div>
       </header>

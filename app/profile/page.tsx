@@ -1,12 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useSpeechNav } from "@/contexts/SpeechNavContext";
 
 const PROFILE_KEY = "neuroadapt-learner-profile";
+const PROFILE_VOICE_INTRO_KEY = "neuroadapt-profile-voice-intro";
 
 type Profile = {
   mode: string;
@@ -22,10 +23,15 @@ export default function ProfilePage() {
   const [audio, setAudio] = useState<string>("no");
   const [focusDuration, setFocusDuration] = useState<string>("medium");
   const [difficulty, setDifficulty] = useState<string>("standard");
+  const introSpoken = useRef(false);
 
   useEffect(() => {
     registerPageCommands({
       save: () => {
+        document.getElementById("profile-save")?.click();
+        speak("Preferences saved.");
+      },
+      continue: () => {
         document.getElementById("profile-save")?.click();
         speak("Preferences saved.");
       },
@@ -37,9 +43,83 @@ export default function ProfilePage() {
         router.push("/");
         speak("Going back.");
       },
+      previous: () => {
+        router.push("/");
+        speak("Going back.");
+      },
+      modeNormal: () => {
+        setMode("normal");
+        speak("Normal.");
+      },
+      modeDyslexia: () => {
+        setMode("dyslexia");
+        speak("Dyslexia-friendly.");
+      },
+      modeAdhd: () => {
+        setMode("adhd");
+        speak("Focus mode.");
+      },
+      modeLowVision: () => {
+        setMode("low-vision");
+        speak("Listen mode.");
+      },
+      profileAudioYes: () => {
+        setAudio("yes");
+        speak("Audio assistance on.");
+      },
+      profileAudioNo: () => {
+        setAudio("no");
+        speak("No audio.");
+      },
+      profileFocusShort: () => {
+        setFocusDuration("short");
+        speak("Short focus, 3 minutes.");
+      },
+      profileFocusMedium: () => {
+        setFocusDuration("medium");
+        speak("Medium focus, 5 minutes.");
+      },
+      profileFocusLong: () => {
+        setFocusDuration("long");
+        speak("Long focus, 10 minutes.");
+      },
+      profileDifficultySimpler: () => {
+        setDifficulty("simpler");
+        speak("Simpler text.");
+      },
+      profileDifficultyStandard: () => {
+        setDifficulty("standard");
+        speak("Standard text.");
+      },
+      profileDifficultyAsIs: () => {
+        setDifficulty("as-is");
+        speak("As written.");
+      },
     });
     return () => clearPageCommands();
   }, [router, registerPageCommands, clearPageCommands, speak]);
+
+  useEffect(() => {
+    if (introSpoken.current) return;
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    try {
+      if (sessionStorage.getItem(PROFILE_VOICE_INTRO_KEY) === "1") return;
+    } catch {
+      return;
+    }
+    introSpoken.current = true;
+    const t = setTimeout(() => {
+      try {
+        sessionStorage.setItem(PROFILE_VOICE_INTRO_KEY, "1");
+      } catch {}
+      speak(
+        "Learning preferences. Say your reading mode: normal, dyslexia, focus, or low vision. " +
+          "Then say audio yes or no, short, medium, or long focus, and simpler, standard, or as written. " +
+          "Say save when done, or skip to go home."
+      );
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [speak]);
 
   const save = () => {
     const profile: Profile = { mode, audio, focusDuration, difficulty };
@@ -88,8 +168,11 @@ export default function ProfilePage() {
         <h1 className="mb-2 text-2xl font-bold text-foreground">
           Learning preferences
         </h1>
-        <p className="mb-8 text-muted-foreground">
+        <p className="mb-2 text-muted-foreground">
           We’ll use this to suggest a default mode and settings.
+        </p>
+        <p className="mb-8 text-sm text-muted-foreground">
+          Voice control: say your choices (e.g. “dyslexia”, “audio yes”, “short focus”, “simpler”), then “save” or “skip”.
         </p>
 
         <div className="space-y-8">

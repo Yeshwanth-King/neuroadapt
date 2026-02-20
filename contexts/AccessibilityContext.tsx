@@ -44,7 +44,6 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [adhdTheme, setAdhdThemeState] = useState<AdhdThemeId>(() => loadAdhdTheme());
   const [transformedContent, setTransformedContent] = useState<TransformedContent | null>(null);
   const [isTransforming, setIsTransforming] = useState(false);
-
   const setAdhdTheme = (t: AdhdThemeId) => {
     setAdhdThemeState(t);
     try {

@@ -92,6 +92,31 @@ const PHRASE_TO_KEY: Record<string, string> = {
   "continue": "continue",
   "continue to lesson": "continue",
 
+  /* Profile page – reading mode (same keys as learn page; profile registers its own handlers) */
+  /* modeNormal, modeDyslexia, modeAdhd, modeLowVision already mapped above */
+
+  /* Profile page – audio */
+  "audio yes": "profileAudioYes",
+  "yes audio": "profileAudioYes",
+  "audio no": "profileAudioNo",
+  "no audio": "profileAudioNo",
+
+  /* Profile page – focus duration */
+  "short focus": "profileFocusShort",
+  "focus short": "profileFocusShort",
+  "medium focus": "profileFocusMedium",
+  "focus medium": "profileFocusMedium",
+  "long focus": "profileFocusLong",
+  "focus long": "profileFocusLong",
+
+  /* Profile page – difficulty */
+  "simpler": "profileDifficultySimpler",
+  "simpler text": "profileDifficultySimpler",
+  "standard": "profileDifficultyStandard",
+  "standard text": "profileDifficultyStandard",
+  "as written": "profileDifficultyAsIs",
+  "as is": "profileDifficultyAsIs",
+
   "turn off": "turnOff",
   "speech off": "turnOff",
   "disable speech": "turnOff",
